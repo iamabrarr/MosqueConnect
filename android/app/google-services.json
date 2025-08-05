@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1014792576693",
+    "project_id": "mosqueconnect-343e9",
+    "storage_bucket": "mosqueconnect-343e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014792576693:android:1b05476166ef80eb71e8fc",
+        "android_client_info": {
+          "package_name": "com.mosqueconnect.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmzJwJ3BfZ3ZtEvAkjyLh-MFBDeT4MDSw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
