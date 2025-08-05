@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mosqueconnect/controllers/login.dart';
 import 'package:mosqueconnect/gen/assets.gen.dart';
 import 'package:mosqueconnect/utils/size_config.dart';
 import 'package:mosqueconnect/utils/spacing.dart';
@@ -18,6 +19,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -43,13 +45,13 @@ class LoginScreen extends StatelessWidget {
             Spacing.y(5),
             CustomTextField(
               label: "Email Address",
-              controller: TextEditingController(),
+              controller: controller.emailController,
               keyboardType: TextInputType.emailAddress,
             ),
             Spacing.y(2),
             CustomTextField(
               label: "Password",
-              controller: TextEditingController(),
+              controller: controller.passwordController,
               isPassword: true,
               keyboardType: TextInputType.visiblePassword,
             ),
@@ -71,12 +73,14 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             Spacing.y(3),
-            CustomButton(
-              text: "Log in",
-              isLoading: false,
-              onPressed: () {
-                Get.to(() => CustomBottomNavBar());
-              },
+            Obx(
+              () => CustomButton(
+                text: "Log in",
+                isLoading: controller.isLoading.value,
+                onPressed: () {
+                  controller.onLogin(context);
+                },
+              ),
             ),
 
             Spacing.y(30),

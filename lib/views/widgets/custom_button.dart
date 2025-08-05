@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mosqueconnect/constants/colors.dart';
 import 'package:mosqueconnect/utils/size_config.dart';
@@ -72,7 +74,9 @@ class _CustomButtonState extends State<CustomButton>
       },
       onPointerUp: (PointerUpEvent event) {
         _controller.reverse();
-        widget.onPressed();
+        if (!widget.disable) {
+          widget.onPressed();
+        }
       },
       child: Transform.scale(
         scale: _scale,

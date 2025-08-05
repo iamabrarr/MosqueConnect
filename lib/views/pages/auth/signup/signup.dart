@@ -76,6 +76,12 @@ class SignUpScreen extends StatelessWidget {
             ),
             Spacing.y(2),
             CustomTextField(
+              label: "Mosque's Address",
+              controller: controller.mosqueAddressController,
+              keyboardType: TextInputType.streetAddress,
+            ),
+            Spacing.y(2),
+            CustomTextField(
               label: "Email Address",
               controller: controller.emailController,
               keyboardType: TextInputType.emailAddress,
@@ -96,10 +102,14 @@ class SignUpScreen extends StatelessWidget {
             ),
 
             Spacing.y(3),
-            CustomButton(
-              text: "Create Account",
-              isLoading: false,
-              onPressed: () {},
+            Obx(
+              () => CustomButton(
+                text: "Create Account",
+                isLoading: controller.isLoading.value,
+                onPressed: () {
+                  controller.onSignup(context);
+                },
+              ),
             ),
 
             Spacing.y(5),

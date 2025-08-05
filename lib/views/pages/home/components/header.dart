@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mosqueconnect/constants/colors.dart';
+import 'package:mosqueconnect/constants/controllers.dart';
 import 'package:mosqueconnect/constants/data.dart';
 import 'package:mosqueconnect/gen/assets.gen.dart';
 import 'package:mosqueconnect/utils/size_config.dart';
@@ -87,25 +89,32 @@ class HomeHeader extends StatelessWidget {
                         ),
                       ),
                       Spacing.x(3),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            DateFormat(
-                              'dd MMM, yyyy hh:mm a',
-                            ).format(DateTime.now()),
-                            style: textTheme.bodySmall!.copyWith(
-                              color: Colors.grey,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              DateFormat(
+                                'dd MMM, yyyy hh:mm a',
+                              ).format(DateTime.now()),
+                              style: textTheme.bodySmall!.copyWith(
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Abu Bakar Mosque',
-                            style: textTheme.bodyLarge!.copyWith(
-                              fontWeight: FontWeight.w600,
+                            Obx(
+                              () => Text(
+                                authController.currentUser?.name ??
+                                    'Unknown User',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: textTheme.bodyLarge!.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),

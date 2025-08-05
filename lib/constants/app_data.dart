@@ -10,3 +10,4 @@ const String termsOfServiceLink = "https://mosqueconnect.com/terms-of-service";
 const String supportLink = "https://mosqueconnect.com/support";
 const String aboutLink = "https://mosqueconnect.com/about";
 const String appEmail = "support@mosqueconnect.com";
+const String supportEmail = "support@mosqueconnect.com";

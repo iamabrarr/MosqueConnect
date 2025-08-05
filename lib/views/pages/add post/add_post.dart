@@ -8,27 +8,46 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mosqueconnect/constants/colors.dart';
+import 'package:mosqueconnect/constants/controllers.dart';
 import 'package:mosqueconnect/controllers/add_post.dart';
 import 'package:mosqueconnect/gen/assets.gen.dart';
+import 'package:mosqueconnect/models/post.dart';
 import 'package:mosqueconnect/services/thumbnail.dart';
 import 'package:mosqueconnect/utils/file_type.dart';
 import 'package:mosqueconnect/utils/size_config.dart';
 import 'package:mosqueconnect/utils/spacing.dart';
 import 'package:mosqueconnect/views/animations/fade_in.dart';
+import 'package:mosqueconnect/views/pages/add%20post/components/field.dart';
 import 'package:mosqueconnect/views/widgets/choose_media_type.dart';
 import 'package:mosqueconnect/views/widgets/custom_appbar.dart';
 import 'package:mosqueconnect/views/widgets/custom_button.dart';
 
-class AddPostScreen extends StatelessWidget {
-  const AddPostScreen({super.key});
+class AddPostScreen extends StatefulWidget {
+  const AddPostScreen({super.key, this.post});
+  final PostModel? post;
+
+  @override
+  State<AddPostScreen> createState() => _AddPostScreenState();
+}
+
+class _AddPostScreenState extends State<AddPostScreen> {
+  final controller = Get.put(AddPostController());
+  @override
+  void initState() {
+    super.initState();
+    if (widget.post != null) {
+      controller.getData(widget.post!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddPostController());
     final textTheme = Theme.of(context).textTheme;
     return Obx(
       () => Scaffold(
-        appBar: CustomAppbar(title: "Add Post"),
+        appBar: CustomAppbar(
+          title: widget.post != null ? "Update Post" : "Add Post",
+        ),
         bottomSheet: Container(
           width: SizeConfig.widthMultiplier * 100,
           color: Colors.white,
@@ -38,9 +57,18 @@ class AddPostScreen extends StatelessWidget {
               vertical: SizeConfig.heightMultiplier * 6,
             ),
             child: CustomButton(
-              onPressed: () {},
-              text: "Post",
-              isLoading: false,
+              onPressed: () async {
+                if (adsController.isInterstitialAdLoaded.value) {
+                  await adsController.interstitialAd.show();
+                }
+                if (widget.post != null) {
+                  controller.onUpdatePost(context, widget.post!);
+                } else {
+                  controller.onAddPost(context);
+                }
+              },
+              text: widget.post != null ? "Update" : "Post",
+              isLoading: controller.isLoading.value,
             ),
           ),
         ),
@@ -99,7 +127,9 @@ class AddPostScreen extends StatelessWidget {
                   //TEXTFIELD
                   Padding(
                     padding: EdgeInsets.only(
-                      bottom: controller.postMedia.value.isNotEmpty
+                      bottom:
+                          controller.postMedia.value.isNotEmpty ||
+                              controller.postMediaUrl.value.isNotEmpty
                           ? 0
                           : SizeConfig.heightMultiplier * 2,
                     ),
@@ -108,7 +138,9 @@ class AddPostScreen extends StatelessWidget {
                   //MEDIA OPTIONS
                   Positioned(
                     bottom: 0,
-                    child: controller.postMedia.value.isNotEmpty
+                    child:
+                        controller.postMedia.value.isNotEmpty ||
+                            controller.postMediaUrl.value.isNotEmpty
                         ? const SizedBox()
                         : IconButton(
                             onPressed: () => Get.bottomSheet(
@@ -127,7 +159,9 @@ class AddPostScreen extends StatelessWidget {
                   Positioned(
                     bottom: 0,
                     left: SizeConfig.widthMultiplier * 8,
-                    child: controller.postMedia.value.isNotEmpty
+                    child:
+                        controller.postMedia.value.isNotEmpty ||
+                            controller.postMediaUrl.value.isNotEmpty
                         ? const SizedBox()
                         : IconButton(
                             onPressed: () => Get.bottomSheet(
@@ -145,6 +179,116 @@ class AddPostScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              //FOR UPDATE POST SHOW ALREADY UPLOADED MEDIA
+              if (widget.post != null &&
+                  controller.postMediaUrl.value.isNotEmpty) ...[
+                !widget.post!.isVideo
+                    ? FadeInWidget(
+                        delay: 100,
+                        child: GestureDetector(
+                          onTap: () => controller.removeMedia(),
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(right: 5, top: 5),
+                                height: SizeConfig.heightMultiplier * 7,
+                                width: SizeConfig.widthMultiplier * 17,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                      controller.postMediaUrl.value,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(top: 0, right: 0, child: _closeBtn()),
+                            ],
+                          ),
+                        ),
+                      )
+                    : FutureBuilder(
+                        future: ThumbnailService.getThumbnailFromNetwork(
+                          controller.postMediaUrl.value,
+                        ),
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return Container(
+                              margin: EdgeInsets.only(right: 5, top: 5),
+                              height: SizeConfig.heightMultiplier * 7,
+                              width: SizeConfig.widthMultiplier * 17,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeCap: StrokeCap.round,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return FadeInWidget(
+                            delay: 100,
+                            child: GestureDetector(
+                              onTap: () => controller.removeMedia(),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 5, top: 5),
+                                    height: SizeConfig.heightMultiplier * 7,
+                                    width: SizeConfig.widthMultiplier * 17,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: MemoryImage(snapshot.data!),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 5, top: 5),
+                                    height: SizeConfig.heightMultiplier * 7,
+                                    width: SizeConfig.widthMultiplier * 17,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black26,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: CircleAvatar(
+                                        radius: SizeConfig.widthMultiplier * 3,
+                                        backgroundColor: Colors.white,
+
+                                        child: Icon(
+                                          FluentIcons.play_12_filled,
+                                          color: Colors.black,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: _closeBtn(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ],
+
               if (controller.postMedia.value.isNotEmpty)
                 FileTypeUtils.isImage(controller.postMedia.value)
                     ? FadeInWidget(
@@ -268,49 +412,6 @@ class AddPostScreen extends StatelessWidget {
           radius: SizeConfig.widthMultiplier * 2,
           backgroundColor: Colors.red,
           child: Icon(Icons.close, size: 12, color: Colors.white),
-        ),
-      ),
-    );
-  }
-}
-
-class AddPostField extends StatelessWidget {
-  const AddPostField({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return TextField(
-      maxLength: 1000,
-      maxLines: 5,
-      autofocus: true,
-      style: textTheme.bodySmall,
-      decoration: InputDecoration(
-        counterStyle: textTheme.bodySmall!.copyWith(
-          fontSize: SizeConfig.textMultiplier * 1.2,
-          color: Colors.grey,
-        ),
-        label: Text("Description"),
-        alignLabelWithHint: false,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        hintText: "Write something...",
-
-        hintStyle: textTheme.bodySmall!.copyWith(color: Colors.grey),
-        contentPadding: EdgeInsets.symmetric(
-          vertical: SizeConfig.heightMultiplier * 1,
-          horizontal: SizeConfig.widthMultiplier * 3,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(color: AppColors.unFocusGreyClr),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(color: AppColors.unFocusGreyClr),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(color: AppColors.unFocusGreyClr),
         ),
       ),
     );

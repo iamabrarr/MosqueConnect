@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mosqueconnect/controllers/forgot_password.dart';
 import 'package:mosqueconnect/gen/assets.gen.dart';
 import 'package:mosqueconnect/utils/size_config.dart';
 import 'package:mosqueconnect/utils/spacing.dart';
@@ -16,7 +17,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
+    final controller = Get.put(ForgotPasswordController());
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppbar(title: ""),
@@ -40,14 +41,14 @@ class ForgotPasswordScreen extends StatelessWidget {
             Spacing.y(5),
             CustomTextField(
               label: "Email Address",
-              controller: TextEditingController(),
+              controller: controller.emailController,
               keyboardType: TextInputType.emailAddress,
             ),
             Spacing.y(3),
             CustomButton(
               text: "Reset Password",
               isLoading: false,
-              onPressed: () {},
+              onPressed: () => controller.sendResetPasswordEmail(),
             ),
 
             Spacing.y(40),
