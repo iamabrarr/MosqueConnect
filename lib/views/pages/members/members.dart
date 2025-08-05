@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -52,7 +53,7 @@ class _MembersScreenState extends State<MembersScreen> {
             delay: 100,
             child: FloatingActionButton(
               onPressed: () async {
-                if (adsController.isInterstitialAdLoaded.value) {
+                if (!kDebugMode && adsController.isInterstitialAdLoaded.value) {
                   await adsController.interstitialAd.show();
                 }
                 Get.to(() => AddMemberScreen());
@@ -129,7 +130,8 @@ class _MembersScreenState extends State<MembersScreen> {
                     buttonText: "Create Member",
                     buttonWidth: SizeConfig.widthMultiplier * 35,
                     onButtonTap: () async {
-                      if (adsController.isInterstitialAdLoaded.value) {
+                      if (!kDebugMode &&
+                          adsController.isInterstitialAdLoaded.value) {
                         await adsController.interstitialAd.show();
                       }
                       Get.to(() => AddMemberScreen());

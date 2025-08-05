@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 2), () {
-      if (adsController.isInterstitialAdLoaded.value) {
+      if (!kDebugMode && adsController.isInterstitialAdLoaded.value) {
         adsController.interstitialAd.show();
       }
     });
@@ -67,7 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
               delay: 100,
               child: FloatingActionButton(
                 onPressed: () async {
-                  if (adsController.isInterstitialAdLoaded.value) {
+                  if (!kDebugMode &&
+                      adsController.isInterstitialAdLoaded.value) {
                     await adsController.interstitialAd.show();
                   }
                   Get.to(() => AddPostScreen());
@@ -157,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           authController.currentUser!.role == UserRole.member
                           ? null
                           : () async {
-                              if (adsController.isInterstitialAdLoaded.value) {
+                              if (!kDebugMode &&
+                                  adsController.isInterstitialAdLoaded.value) {
                                 await adsController.interstitialAd.show();
                               }
                               Get.to(() => AddPostScreen());

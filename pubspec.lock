@@ -1322,14 +1322,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
-  v_video_compressor:
-    dependency: "direct main"
-    description:
-      name: v_video_compressor
-      sha256: ae0093246c10073e002b2f423520c2325dca0bcc878e43b971eac153a874acd0
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
   vector_graphics_codec:
     dependency: transitive
     description:
@@ -1354,6 +1346,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  video_compress:
+    dependency: "direct main"
+    description:
+      name: video_compress
+      sha256: "31bc5cdb9a02ba666456e5e1907393c28e6e0e972980d7d8d619a7beda0d4f20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.4"
   video_thumbnail:
     dependency: "direct main"
     description:

@@ -40,7 +40,14 @@ class EditProfileController extends GetxController {
       isLoading.value = true;
       String? imageUrl = authController.userMosque?.mosqueImage;
       if (pickedImage.value.isNotEmpty) {
-        imageUrl = await CloudinaryService.uploadFile(pickedImage.value);
+        imageUrl = await CloudinaryService.uploadFile(pickedImage.value, (
+          count,
+          total,
+        ) {
+          if (kDebugMode) {
+            log('Uploading image from file with progress: $count/$total');
+          }
+        });
       }
       await firestore
           .collection(DbCollections.users)

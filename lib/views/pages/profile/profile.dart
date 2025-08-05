@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -73,7 +74,8 @@ class ProfileScreen extends StatelessWidget {
                 : Center(
                     child: CustomButton(
                       onPressed: () async {
-                        if (adsController.isInterstitialAdLoaded.value) {
+                        if (!kDebugMode &&
+                            adsController.isInterstitialAdLoaded.value) {
                           await adsController.interstitialAd.show();
                         }
                         Get.to(() => const EditProfileScreen());
@@ -109,7 +111,8 @@ class ProfileScreen extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedImageAdd01,
                     text: "Add Post",
                     onTap: () async {
-                      if (adsController.isInterstitialAdLoaded.value) {
+                      if (!kDebugMode &&
+                          adsController.isInterstitialAdLoaded.value) {
                         await adsController.interstitialAd.show();
                       }
                       Get.to(() => const AddPostScreen());
@@ -124,7 +127,8 @@ class ProfileScreen extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedUserAdd01,
                     text: "Add Members",
                     onTap: () async {
-                      if (adsController.isInterstitialAdLoaded.value) {
+                      if (!kDebugMode &&
+                          adsController.isInterstitialAdLoaded.value) {
                         await adsController.interstitialAd.show();
                       }
                       Get.to(() => const AddMemberScreen());

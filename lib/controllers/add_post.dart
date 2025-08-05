@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,10 +11,14 @@ import 'package:mosqueconnect/constants/db_collections.dart';
 import 'package:mosqueconnect/constants/instances.dart';
 import 'package:mosqueconnect/models/post.dart';
 import 'package:mosqueconnect/services/cloudinary.dart';
+import 'package:mosqueconnect/services/compressor.dart';
 import 'package:mosqueconnect/utils/file_type.dart';
 import 'package:mosqueconnect/views/widgets/custom_snackbar.dart';
+import 'package:video_compress/video_compress.dart';
 
 class AddPostController extends GetxController {
+  RxDouble compressionProgress = 0.0.obs;
+  RxDouble uploadProgress = 0.0.obs;
   RxBool isLoading = false.obs;
   RxString postMedia = "".obs;
   RxString postMediaUrl = "".obs;
@@ -68,9 +73,41 @@ class AddPostController extends GetxController {
         return;
       }
       FocusScope.of(context).unfocus();
-      String? imageUrl = postMedia.value.isNotEmpty
-          ? await CloudinaryService.uploadFile(postMedia.value)
+      _clearProgressValues();
+      MediaInfo? compressionResult;
+      //COMPRESS MEDIA
+      if (postMedia.value.isNotEmpty) {
+        compressionResult = await FileCompressor.compressVideoWithProgress(
+          filePath: postMedia.value,
+          onProgress: (progress) {
+            compressionProgress.value = progress;
+            if (kDebugMode) {
+              log("COMPRESSING PROGRESS: $progress");
+            }
+          },
+        );
+      }
+      if (kDebugMode) {
+        logFileSizes(postMedia.value, compressionResult?.file?.path);
+      }
+      compressionProgress.value = 0;
+      uploadProgress.value = 1;
+      //UPLOAD MEDIA
+      String? imageUrl = compressionResult != null
+          ? await CloudinaryService.uploadFile(
+              compressionResult.file?.path ?? "",
+              (count, total) {
+                //CALCULATE PERCENTAGE
+                double percentage = (count / total) * 100;
+                uploadProgress.value = percentage;
+                if (kDebugMode) {
+                  log('Uploading image from file with progress: $percentage%');
+                }
+              },
+            )
           : null;
+      //ClEAR PROGRESS VALUES
+      _clearProgressValues();
       final postID = DateTime.now().millisecondsSinceEpoch.toString();
       final post = PostModel(
         id: postID,
@@ -119,7 +156,43 @@ class AddPostController extends GetxController {
       FocusScope.of(context).unfocus();
       String? imageUrl;
       if (postMedia.value.isNotEmpty) {
-        imageUrl = await CloudinaryService.uploadFile(postMedia.value);
+        _clearProgressValues();
+        MediaInfo? compressedFilePath;
+        //COMPRESS MEDIA
+        if (postMedia.value.isNotEmpty) {
+          compressedFilePath = await FileCompressor.compressVideoWithProgress(
+            filePath: postMedia.value,
+            onProgress: (progress) {
+              compressionProgress.value = progress;
+              if (kDebugMode) {
+                log("COMPRESSING PROGRESS: $progress");
+              }
+            },
+          );
+        }
+        compressionProgress.value = 0;
+        uploadProgress.value = 1;
+        if (kDebugMode) {
+          logFileSizes(postMedia.value, compressedFilePath?.file?.path);
+        }
+        //UPLOAD MEDIA
+        imageUrl = compressedFilePath != null
+            ? await CloudinaryService.uploadFile(
+                compressedFilePath.file?.path ?? "",
+                (count, total) {
+                  //CALCULATE PERCENTAGE
+                  double percentage = (count / total) * 100;
+                  uploadProgress.value = percentage;
+                  if (kDebugMode) {
+                    log(
+                      'Uploading image from file with progress: $percentage%',
+                    );
+                  }
+                },
+              )
+            : null;
+        //ClEAR PROGRESS VALUES
+        _clearProgressValues();
       } else if (postMediaUrl.value.isNotEmpty) {
         imageUrl = postMediaUrl.value;
       } else {
@@ -150,8 +223,26 @@ class AddPostController extends GetxController {
     }
   }
 
+  void _clearProgressValues() {
+    compressionProgress.value = 0;
+    uploadProgress.value = 0;
+  }
+
   Future<void> getData(PostModel post) async {
     postDescription.text = post.description;
     postMediaUrl.value = post.mediaUrl ?? "";
+  }
+
+  void logFileSizes(String originalPath, String? compressedPath) {
+    final originalSizeInMB = (File(originalPath).lengthSync() / (1024 * 1024))
+        .toStringAsFixed(2);
+
+    final compressedSizeInMB =
+        compressedPath != null && compressedPath.isNotEmpty
+        ? (File(compressedPath).lengthSync() / (1024 * 1024)).toStringAsFixed(2)
+        : "0.00";
+
+    log("ORIGINAL FILE SIZE: $originalSizeInMB MB");
+    log("COMPRESSED FILE SIZE: $compressedSizeInMB MB");
   }
 }

@@ -5,7 +5,10 @@ import 'dart:io';
 import 'package:cloudinary/cloudinary.dart';
 
 class CloudinaryService {
-  static Future<String?> uploadFile(String path) async {
+  static Future<String?> uploadFile(
+    String path,
+    Function(int, int)? progressCallback,
+  ) async {
     // final fileName = basename(path);
     final fileName = path.split("/").last;
     //we have to add file/ before the path to make the path useable
@@ -23,9 +26,7 @@ class CloudinaryService {
       resourceType: CloudinaryResourceType.auto,
       folder: "timly",
       fileName: fileName,
-      progressCallback: (count, total) {
-        //print('Uploading image from file with progress: $count/$total');
-      },
+      progressCallback: progressCallback,
     );
     if (response.isSuccessful) {
       //print('Get your image from with ${response.secureUrl}');

@@ -35,7 +35,14 @@ class SignupController extends GetxController {
     try {
       isLoading.value = true;
       if (_validator(context)) {
-        final imageUrl = await CloudinaryService.uploadFile(pickedImage.value);
+        final imageUrl = await CloudinaryService.uploadFile(pickedImage.value, (
+          count,
+          total,
+        ) {
+          if (kDebugMode) {
+            log('Uploading image from file with progress: $count/$total');
+          }
+        });
         final user = await auth.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text,
