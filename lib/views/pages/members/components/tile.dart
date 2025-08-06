@@ -51,19 +51,10 @@ class MemberTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.name,
-                  maxLines: 1,
+                  user.email,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: textTheme.bodySmall,
-                ),
-                Text(
-                  user.email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme.bodySmall!.copyWith(
-                    color: Colors.grey,
-                    fontSize: SizeConfig.textMultiplier * 1.2,
-                  ),
                 ),
               ],
             ),
@@ -108,7 +99,7 @@ class MemberTile extends StatelessWidget {
             },
             onSelected: (val) {
               if (val == 0) {
-                Get.to(() => AddMemberScreen(user: user));
+                Get.to(() => AddMemberScreen);
               } else if (val == 1) {
                 Get.dialog(
                   ConfirmationDialog(

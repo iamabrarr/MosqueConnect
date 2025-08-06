@@ -14,7 +14,7 @@ class AddPostField extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return TextField(
       controller: controller.postDescription,
-      maxLength: 1000,
+      maxLength: 3000,
       maxLines: null,
       minLines: 5,
       autofocus: true,

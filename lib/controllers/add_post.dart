@@ -87,7 +87,7 @@ class AddPostController extends GetxController {
           },
         );
       }
-      if (kDebugMode) {
+      if (kDebugMode && postMedia.value.isNotEmpty) {
         logFileSizes(postMedia.value, compressionResult?.file?.path);
       }
       compressionProgress.value = 0;
@@ -172,7 +172,7 @@ class AddPostController extends GetxController {
         }
         compressionProgress.value = 0;
         uploadProgress.value = 1;
-        if (kDebugMode) {
+        if (kDebugMode && postMedia.value.isNotEmpty) {
           logFileSizes(postMedia.value, compressedFilePath?.file?.path);
         }
         //UPLOAD MEDIA

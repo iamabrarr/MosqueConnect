@@ -14,7 +14,6 @@ import 'package:mosqueconnect/views/widgets/custom_snackbar.dart';
 class AddMemberController extends GetxController {
   RxBool isLoading = false.obs;
 
-  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -39,7 +38,7 @@ class AddMemberController extends GetxController {
         isLoggedIn: false,
         fcmToken: "",
         mosqueAddress: "",
-        name: nameController.text,
+        name: "Member",
         email: emailController.text,
         mosqueImage: null,
         mosqueID: authController.currentUser?.uid ?? "",
@@ -69,42 +68,10 @@ class AddMemberController extends GetxController {
   }
 
   void getData(UserModel user) {
-    nameController.text = user.name;
     emailController.text = user.email;
   }
 
-  Future<void> onUpdateMember(BuildContext context, UserModel user) async {
-    try {
-      if (nameController.text.isEmpty) {
-        showCustomSnackbar(context, true, "Please enter a full name.");
-        return;
-      }
-      FocusScope.of(context).unfocus();
-      isLoading.value = true;
-      await firestore.collection(DbCollections.users).doc(user.uid).update({
-        "name": nameController.text,
-      });
-      showCustomSnackbar(context, false, "Member updated successfully.");
-      Get.back();
-    } catch (e) {
-      if (kDebugMode) {
-        log(e.toString());
-      }
-      if (e is FirebaseAuthException) {
-        showCustomSnackbar(context, true, e.message ?? "Something went wrong");
-      } else {
-        showCustomSnackbar(context, true, "Something went wrong");
-      }
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
   bool validate(BuildContext context) {
-    if (nameController.text.isEmpty) {
-      showCustomSnackbar(context, true, "Please enter a full name.");
-      return false;
-    }
     if (emailController.text.isEmpty) {
       showCustomSnackbar(context, true, "Please enter an email.");
       return false;

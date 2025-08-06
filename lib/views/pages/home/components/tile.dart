@@ -249,10 +249,10 @@ class _PostTileState extends State<PostTile> {
                     readLessText: 'Read Less',
 
                     textStyle: textTheme.bodySmall!.copyWith(
-                      fontSize: SizeConfig.textMultiplier * 1.2,
+                      fontSize: SizeConfig.textMultiplier * 1.4,
                     ),
                     buttonTextStyle: textTheme.bodySmall!.copyWith(
-                      fontSize: SizeConfig.textMultiplier * 1.1,
+                      fontSize: SizeConfig.textMultiplier * 1.4,
                       color: AppColors.secondary,
                       fontWeight: FontWeight.w500,
                     ),

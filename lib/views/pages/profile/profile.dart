@@ -74,10 +74,10 @@ class ProfileScreen extends StatelessWidget {
                 : Center(
                     child: CustomButton(
                       onPressed: () async {
-                        if (!kDebugMode &&
-                            adsController.isInterstitialAdLoaded.value) {
-                          await adsController.interstitialAd.show();
-                        }
+                        // if (!kDebugMode &&
+                        //     adsController.isInterstitialAdLoaded.value) {
+                        //   await adsController.interstitialAd.show();
+                        // }
                         Get.to(() => const EditProfileScreen());
                       },
                       height: SizeConfig.heightMultiplier * 3.5,
@@ -111,10 +111,10 @@ class ProfileScreen extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedImageAdd01,
                     text: "Add Post",
                     onTap: () async {
-                      if (!kDebugMode &&
-                          adsController.isInterstitialAdLoaded.value) {
-                        await adsController.interstitialAd.show();
-                      }
+                      // if (!kDebugMode &&
+                      //     adsController.isInterstitialAdLoaded.value) {
+                      //   await adsController.interstitialAd.show();
+                      // }
                       Get.to(() => const AddPostScreen());
                     },
                   ),
@@ -127,10 +127,10 @@ class ProfileScreen extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedUserAdd01,
                     text: "Add Members",
                     onTap: () async {
-                      if (!kDebugMode &&
-                          adsController.isInterstitialAdLoaded.value) {
-                        await adsController.interstitialAd.show();
-                      }
+                      // if (!kDebugMode &&
+                      //     adsController.isInterstitialAdLoaded.value) {
+                      //   await adsController.interstitialAd.show();
+                      // }
                       Get.to(() => const AddMemberScreen());
                     },
                   ),
@@ -177,21 +177,25 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             Spacing.y(2),
-            ProfileOption(
-              icon: HugeIcons.strokeRoundedUser,
-              text: "Delete Account",
-              onTap: () => Get.dialog(
-                ConfirmationDialog(
-                  title: "Delete Account",
-                  subtitle:
-                      "Are you sure you want to delete your account? This action cannot be undone.",
-                  onConfirm: () {
-                    authController.deleteAccount(context);
-                  },
-                ),
-              ),
-            ),
-            Spacing.y(1.5),
+            authController.currentUser?.role == UserRole.member
+                ? SizedBox()
+                : ProfileOption(
+                    icon: HugeIcons.strokeRoundedUser,
+                    text: "Delete Account",
+                    onTap: () => Get.dialog(
+                      ConfirmationDialog(
+                        title: "Delete Account",
+                        subtitle:
+                            "Are you sure you want to delete your account? This action cannot be undone.",
+                        onConfirm: () {
+                          authController.deleteAccount(context);
+                        },
+                      ),
+                    ),
+                  ),
+            authController.currentUser?.role == UserRole.member
+                ? SizedBox()
+                : Spacing.y(1.5),
             ProfileOption(
               icon: HugeIcons.strokeRoundedLogout01,
               text: "Logout",

@@ -91,10 +91,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
                   CustomButton(
                     onPressed: () async {
-                      if (!kDebugMode &&
-                          adsController.isInterstitialAdLoaded.value) {
-                        await adsController.interstitialAd.show();
-                      }
+                      // if (!kDebugMode &&
+                      //     adsController.isInterstitialAdLoaded.value) {
+                      //   await adsController.interstitialAd.show();
+                      // }
                       if (widget.post != null) {
                         controller.onUpdatePost(context, widget.post!);
                       } else {
@@ -174,47 +174,47 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       child: AddPostField(),
                     ),
                     //MEDIA OPTIONS
-                    Positioned(
-                      bottom: 0,
-                      child:
-                          controller.postMedia.value.isNotEmpty ||
-                              controller.postMediaUrl.value.isNotEmpty
-                          ? const SizedBox()
-                          : IconButton(
-                              onPressed: () => Get.bottomSheet(
-                                ChooseMediaType(
-                                  onPhoto: () => controller.onCameraPhoto(),
-                                  onVideo: () => controller.onCameraVideo(),
-                                ),
-                              ),
-                              icon: Icon(
-                                HugeIcons.strokeRoundedCamera02,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                            ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: SizeConfig.widthMultiplier * 8,
-                      child:
-                          controller.postMedia.value.isNotEmpty ||
-                              controller.postMediaUrl.value.isNotEmpty
-                          ? const SizedBox()
-                          : IconButton(
-                              onPressed: () => Get.bottomSheet(
-                                ChooseMediaType(
-                                  onPhoto: () => controller.onGalleryPhoto(),
-                                  onVideo: () => controller.onGalleryVideo(),
-                                ),
-                              ),
-                              icon: Icon(
-                                HugeIcons.strokeRoundedImage01,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                            ),
-                    ),
+                    // Positioned(
+                    //   bottom: 0,
+                    //   child:
+                    //       controller.postMedia.value.isNotEmpty ||
+                    //           controller.postMediaUrl.value.isNotEmpty
+                    //       ? const SizedBox()
+                    //       : IconButton(
+                    //           onPressed: () => Get.bottomSheet(
+                    //             ChooseMediaType(
+                    //               onPhoto: () => controller.onCameraPhoto(),
+                    //               onVideo: () => controller.onCameraVideo(),
+                    //             ),
+                    //           ),
+                    //           icon: Icon(
+                    //             HugeIcons.strokeRoundedCamera02,
+                    //             size: 18,
+                    //             color: Colors.grey,
+                    //           ),
+                    //         ),
+                    // ),
+                    // Positioned(
+                    //   bottom: 0,
+                    //   left: SizeConfig.widthMultiplier * 8,
+                    //   child:
+                    //       controller.postMedia.value.isNotEmpty ||
+                    //           controller.postMediaUrl.value.isNotEmpty
+                    //       ? const SizedBox()
+                    //       : IconButton(
+                    //           onPressed: () => Get.bottomSheet(
+                    //             ChooseMediaType(
+                    //               onPhoto: () => controller.onGalleryPhoto(),
+                    //               onVideo: () => controller.onGalleryVideo(),
+                    //             ),
+                    //           ),
+                    //           icon: Icon(
+                    //             HugeIcons.strokeRoundedImage01,
+                    //             size: 18,
+                    //             color: Colors.grey,
+                    //           ),
+                    //         ),
+                    // ),
                   ],
                 ),
                 //FOR UPDATE POST SHOW ALREADY UPLOADED MEDIA

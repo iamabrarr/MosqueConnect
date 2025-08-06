@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 2), () {
-      if (!kDebugMode && adsController.isInterstitialAdLoaded.value) {
+      if (adsController.isInterstitialAdLoaded.value) {
         adsController.interstitialAd.show();
       }
     });
@@ -67,10 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
               delay: 100,
               child: FloatingActionButton(
                 onPressed: () async {
-                  if (!kDebugMode &&
-                      adsController.isInterstitialAdLoaded.value) {
-                    await adsController.interstitialAd.show();
-                  }
+                  // if (!kDebugMode &&
+                  //     adsController.isInterstitialAdLoaded.value) {
+                  //   await adsController.interstitialAd.show();
+                  // }
                   Get.to(() => AddPostScreen());
                 },
                 backgroundColor: AppColors.primary,
@@ -158,10 +158,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           authController.currentUser!.role == UserRole.member
                           ? null
                           : () async {
-                              if (!kDebugMode &&
-                                  adsController.isInterstitialAdLoaded.value) {
-                                await adsController.interstitialAd.show();
-                              }
+                              // if (!kDebugMode &&
+                              //     adsController.isInterstitialAdLoaded.value) {
+                              //   await adsController.interstitialAd.show();
+                              // }
                               Get.to(() => AddPostScreen());
                             },
                     );
@@ -172,8 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: snapshot.data!.docs.length,
                     padding: EdgeInsets.only(
                       top: SizeConfig.heightMultiplier * 2,
-                      left: SizeConfig.widthMultiplier * 6,
-                      right: SizeConfig.widthMultiplier * 6,
+                      left: SizeConfig.widthMultiplier * 2,
+                      right: SizeConfig.widthMultiplier * 2,
                       bottom: SizeConfig.heightMultiplier * 12,
                     ),
                     shrinkWrap: true,
